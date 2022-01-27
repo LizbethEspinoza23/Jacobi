@@ -1,13 +1,20 @@
-function x=jacobi(A,b,x,tol,m)
-n=length(x);
-
-for k=1:m
-  w=x;
-  for i=1:n
-    s=A(i,1:i-1)*w(1:i-1)+A(i,i+1:n)*w(i+1:n);
-    x(i)= (b(i)-s)/A(i,i);
-    endfor
-    if norm(w-x,inf)<tol
-      return
-     end
+function[y,err,it]=jacobiano(A,b,maxiter,tol)
+n=length(b);
+it=0;
+err=2*tol;
+x=zeros(1,n);
+y=zeros(1,n);
+while it<maxiter && err>tol
+    for i=1:n
+        S=0;
+       for j=1:n
+        if i~=j
+            S=S+A(i,j)*x(j);
+        end
+       end
+       y(i)=(b(i)-S)/A(i,i);
+    end
+    it=it+1;
+    err=norm(x-y,1);
+    x=y;
 end
